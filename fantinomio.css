@@ -1,0 +1,243 @@
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('OpenDyslexic-Regular.otf'); /* IE9 Compat Modes */
+  
+}
+
+#story {
+    padding: 5px 5px;
+    margin-left:0;
+}
+#passages {
+	max-width:99%;
+	
+	
+}
+.passage {
+display:flex;
+	box-lines: multiple;flex-wrap: wrap;
+}
+
+#passages a.link-external:after {
+	content: normal;
+}
+
+
+
+
+.item {
+
+ flex: 0 40%;
+ 
+  
+  height: 100%;
+    text-align: center;
+      padding: 0.5em;
+}
+
+@media screen and (min-width: 800px) {
+  .item {
+
+ flex: 0 20%;
+ 
+  
+	}
+} 
+
+
+
+.item + .item {
+  margin-left: 2%;
+}
+
+.itemside {
+ flex: 0 26.5%;
+  flex-grow: 1;
+  height: 100px;
+  text-align: center;
+  
+}
+.itemcentral {
+ flex: 0 47%;
+  flex-grow: 1;
+  height: 100px;
+  
+}
+
+
+.link-image img{
+width: 100%;
+position:relative;
+
+}
+
+
+
+.go_back_link img:hover{
+opacity: 0.5;
+}
+
+#animated img{
+background: transparent;
+}
+
+.item_with_description {
+  font-size: 1.5vw;
+  text-align: left;
+  display:block;
+}
+
+
+
+body {
+  font-family: 'OpenDyslexic', Fallback, sans-serif;
+  font-size: 2vw;
+  background-color:white;
+	background-imagett: url("text_bg9f.jpg");
+	background-size: 600px;
+	background-image: url("lined-paper.png");
+	color:black;
+}
+
+tw-sidebar
+{
+display: none;
+}
+
+tw-passage {
+    display: inline-block;
+}
+
+tw-linkx:link img{border-color:#0645ad; border-style:solid; border-width:3px;}
+tw-link:hover img{border-color:#0645ad; border-style:solid; border-width:3px; text-decoration: underline;}
+tw-linkx:visited img{border-color:#036; border-style:solid; border-width:3px;}
+a:active img{border-color:#036; border-style:solid; border-width:3px;opacity: 0.8;}
+
+.inline-border {border:0px; border-style:solid; border-color:#444444; padding: 0em;
+border-radius: 0.5em;
+background:#fff7e4;
+
+ border-top-left-radius: 37px 140px;
+  border-top-right-radius: 23px 130px;
+  border-bottom-left-radius: 110px 19px;
+  border-bottom-right-radius: 120px 24px;
+  
+border-top-left-radius: 1em 3em;
+  border-top-right-radius: 1.5em 2em;
+  border-bottom-left-radius: 4em 1em;
+  border-bottom-right-radius: 3em 1.5em;
+  padding:0.2em;
+  padding-left:0.3em;
+ 
+box-shadow: 0.15em 0.15em 0.1em 0.2em #999999;
+
+}
+
+img{
+ position:relative;
+ width:100%;
+ background: transparent;   
+}
+
+
+
+video{
+    width: 100%;
+    height: auto;
+}
+
+#ui-bar {
+display: none;
+}
+.illustration {
+  max-width: 60px;
+	 
+}
+
+.example-print {
+    display: none;
+}
+@media print {
+   .example-screen {
+       display: none;
+    }
+    .example-print {
+       display: block;
+    }
+    .item {
+    border: solid;
+    border-color: #383838;
+	flex: 0 20%;
+ 	 height: 100%;
+   	 text-align: center;
+      padding: 0.5em;
+}
+    
+}
+
+
+/*! <<shake>> macro set for SugarCube 2.x */
+@-webkit-keyframes shakeanim {
+	0% { -webkit-transform: translate(2px, 1px) rotate(0deg); }
+	10% { -webkit-transform: translate(-1px, -2px) rotate(-1deg); }
+	20% { -webkit-transform: translate(-3px, 0px) rotate(1deg); }
+	30% { -webkit-transform: translate(0px, 2px) rotate(0deg); }
+	40% { -webkit-transform: translate(1px, -1px) rotate(1deg); }
+	50% { -webkit-transform: translate(-1px, 2px) rotate(-1deg); }
+	60% { -webkit-transform: translate(-3px, 1px) rotate(0deg); }
+	70% { -webkit-transform: translate(2px, 1px) rotate(-1deg); }
+	80% { -webkit-transform: translate(-1px, -1px) rotate(1deg); }
+	90% { -webkit-transform: translate(2px, 2px) rotate(0deg); }
+	100% { -webkit-transform: translate(1px, -2px) rotate(-1deg); }
+}
+@-o-keyframes shakeanim {
+	0% { -o-transform: translate(2px, 1px) rotate(0deg); }
+	10% { -o-transform: translate(-1px, -2px) rotate(-1deg); }
+	20% { -o-transform: translate(-3px, 0px) rotate(1deg); }
+	30% { -o-transform: translate(0px, 2px) rotate(0deg); }
+	40% { -o-transform: translate(1px, -1px) rotate(1deg); }
+	50% { -o-transform: translate(-1px, 2px) rotate(-1deg); }
+	60% { -o-transform: translate(-3px, 1px) rotate(0deg); }
+	70% { -o-transform: translate(2px, 1px) rotate(-1deg); }
+	80% { -o-transform: translate(-1px, -1px) rotate(1deg); }
+	90% { -o-transform: translate(2px, 2px) rotate(0deg); }
+	100% { -o-transform: translate(1px, -2px) rotate(-1deg); }
+}
+@keyframes shakeanim {
+	0% { transform: translate(2px, 1px) rotate(0deg); }
+	10% { transform: translate(-1px, -2px) rotate(-1deg); }
+	20% { transform: translate(-3px, 0px) rotate(1deg); }
+	30% { transform: translate(0px, 2px) rotate(0deg); }
+	40% { transform: translate(1px, -1px) rotate(1deg); }
+	50% { transform: translate(-1px, 2px) rotate(-1deg); }
+	60% { transform: translate(-3px, 1px) rotate(0deg); }
+	70% { transform: translate(2px, 1px) rotate(-1deg); }
+	80% { transform: translate(-1px, -1px) rotate(1deg); }
+	90% { transform: translate(2px, 2px) rotate(0deg); }
+	100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+.shake-block,
+.shake {
+	-webkit-animation-duration: 0.8s;
+	     -o-animation-duration: 0.8s;
+	        animation-duration: 0.8s;
+	-webkit-animation-iteration-count: infinite;
+	     -o-animation-iteration-count: infinite;
+	        animation-iteration-count: infinite;
+	-webkit-animation-name: shakeanim;
+	     -o-animation-name: shakeanim;
+	        animation-name: shakeanim;
+	-webkit-animation-timing-function: linear;
+	     -o-animation-timing-function: linear;
+	        animation-timing-function: linear;
+	-webkit-transform-origin: 50% 50%;
+	    -ms-transform-origin: 50% 50%;
+	     -o-transform-origin: 50% 50%;
+	        transform-origin: 50% 50%;
+}
+.shake-block {
+	display: block;
+}
+.shake {
+	display: inline-block;
+}

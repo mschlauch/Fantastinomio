@@ -1,0 +1,749 @@
+:: StoryTitle
+Fantastinomio
+
+
+:: StoryData
+{
+	"ifid": "98E92CE1-FC82-4A79-B27D-DA5C4C4643E7",
+	
+	"format": "SugarCube",
+	"format-version": "2.30.0",
+	"start": "Titlepage",
+	"zoom": 1
+}
+
+
+:: Story Stylesheet [stylesheet]
+
+
+
+:: Story JavaScript [script]
+importStyles([
+	"fantinomio.css"
+]);
+
+$.support.cors = true;
+if (window.hasOwnProperty("storyFormat")) {
+	// Change this to the path where your HTML file is
+	// located if you want to run this from inside Twine.
+	setup.Path = "C:/Games/MyGameDirectory/";  // Running inside Twine application
+} else {
+	setup.Path = "";  // Running in a browser
+}
+setup.JSLoaded = false;
+importScripts(setup.Path + "Import_story_elements.js")
+	.then(function() {
+		setup.JSLoaded = true;
+	}).catch(function(error) {
+		alert("Error: Could not find file 'Import_story_elements.js'.");
+	}
+);
+setup.JSLoaded2 = false;
+importScripts(setup.Path + "text2speech.js")
+	.then(function() {
+		setup.JSLoaded2 = true;
+	}).catch(function(error) {
+		alert("Error: Could not find file 'text2speech.js'.");
+	}
+);
+
+// variables().anzeigetext = "neuer anzeigetext mit vielen vielen vielen Variablen";
+
+var IntervalID = 0;
+if (setup.JSLoaded) {
+	Load_data();
+} else {
+	clearInterval(IntervalID);
+	IntervalID = setInterval(JSWait, 100);  // Starts waiting for external JavaScript to load.
+}
+function JSWait() {  // Checks to see if JavaScript has loaded yet.
+	if (setup.JSLoaded) {
+		clearInterval(IntervalID);  // Stop waiting
+		Load_data();
+	}
+}
+function Load_data() {
+	// Your code that depends on the loaded JavaScript here.
+variables().storyobjects = Load_data_storyelements();
+
+//in what follows unique catories extraction for the options
+var languages = new Array;
+for (let i = 0; i < variables().storyobjects.length; i++) {
+languages.push(variables().storyobjects[i].language);
+  console.log(variables().storyobjects[i].language);
+}
+
+let uniquelanguages = [...new Set(languages)];
+console.log(uniquelanguages);
+variables().uniquelanguages = uniquelanguages;
+
+var categories = new Array;
+categories.push("-");
+for (let i = 0; i < variables().storyobjects.length; i++) {
+categories.push(variables().storyobjects[i].category);
+  console.log(variables().storyobjects[i].category);
+}
+
+let uniquecategories = [...new Set(categories)];
+console.log(uniquecategories);
+variables().uniquecategories = uniquecategories;
+
+
+
+
+
+
+}
+
+/*! <<shake>> macro set for SugarCube 2.x */
+!function(){"use strict";if("undefined"==typeof version||"undefined"==typeof version.title||"SugarCube"!==version.title||"undefined"==typeof version.major||version.major<2||"undefined"==typeof version.minor||version.minor<5)throw new Error("<<shake>> macro requires SugarCube 2.5.0 or greater, aborting load");Macro.add("shake",{tags:null,handler:function(){var duration=this.args.length>0?this.args[0]:1/0,shakeClass="shake";if(1/0!==duration)try{duration=Math.max(Engine.minDomActionDelay,Util.fromCssTime(duration))}catch(e){return this.error(e.message)}Config.debug&&this.debugView.modes({block:!0});var $wrapper=jQuery(document.createElement("span"));$wrapper.addClass("macro-"+this.name+" "+shakeClass).wiki(this.payload[0].contents).appendTo(this.output),1/0!==duration&&setTimeout(function(){$wrapper.removeClass(shakeClass)},Engine.minDomActionDelay+duration)}}),Macro.add(["shakescreen","shaketarget"],{handler:function(){var $targets,duration,shakeClass;if("shakescreen"===this.name)$targets=jQuery("#passages"),duration=this.args.length>0?this.args[0]:1/0,shakeClass="shake-block";else{if(0===this.args.length)return this.error("no selector specified");if($targets=jQuery(this.args[0]),0===$targets.length)return this.error('no elements matched the selector "'+this.args[0]+'"');duration=this.args.length>1?this.args[1]:1/0,shakeClass="block"===jQuery($targets[0]).css("display")?"shake-block":"shake"}if("stop"===duration)return void $targets.removeClass(shakeClass);if(1/0!==duration)try{duration=Math.max(Engine.minDomActionDelay,Util.fromCssTime(duration))}catch(e){return this.error(e.message)}$targets.addClass(shakeClass),1/0!==duration&&setTimeout(function(){$targets.removeClass(shakeClass)},Engine.minDomActionDelay+duration)}})}();
+
+
+
+:: custom_widget [widget]
+<<widget "select_offered_storyelements">>
+
+
+
+
+
+/*
+setup the setting according to the unique category selected
+*/
+<<if $mandatory_category eq $uniquecategories[0]>>
+<<set $mandatory_category_on to false>>
+<<else>>
+<<set $mandatory_category_on to true>>
+<</if>>
+
+<<set _continue_random_selection to true>> 
+<<for _i to 0; _continue_random_selection ; _i++>>
+<<set _storyelementA to either($storyobjects_filtered)>>
+<<set _storyelementB to either($storyobjects_filtered)>>
+<<set _storyelementC to either($storyobjects_filtered)>>
+<<if _storyelementA.category neq _storyelementB.category && _storyelementA.category neq _storyelementC.category && _storyelementB.category neq _storyelementC.category>> 
+<<if _storyelementA.category eq $mandatory_category || _storyelementA.category eq $mandatory_category  || _storyelementB.category eq $mandatory_category >>
+<<set _continue_random_selection to false>><<elseif !$mandatory_category_on >><<set _continue_random_selection to false>><<else  >><<set _continue_random_selection to true>><</if>><</if>>
+/*
+make a sub if referring to the minimum preferential category (say: media education .. technology...)
+*/
+<<if _i gte 100 && _storyelementA.title neq _storyelementB.title && _storyelementA.title neq _storyelementC.title && _storyelementB.title neq _storyelementC.title>><<set _continue_random_selection to false>><</if>> /* this is to ensure that also with 2 categories it is possible to accept two choices of the same category */
+<</for>>
+<</widget>>
+
+<<widget "display_story_ending">>
+@@.item;.example-screen;
+<p class="inline-border">[[$vocabulary.restart|start]] <<= '<a href="javascript:void(0)" onclick="window.print()"' +'>🖨️</a>'>></p><p class="inline-border">[[$vocabulary.further_explorations|explore_on_web]]</p><p class="inline-border">[[$vocabulary.sources|credits]]</p>
+@@
+@@.example-print;
+$storyelement01.title
+$storyelement02.title
+$storyelement03.title
+$storyelement04.title
+$storyelement05.title
+$storyelement06.title
+$storyelement07.title
+$storyelement08.title
+@@
+<</widget>>
+
+
+<<widget "filter_storyobject_languages">>
+
+<<script>>
+console.log("filter storyobject running");
+
+var storyobjects_filtered = new Array;
+for (let i = 0; i < variables().storyobjects.length; i++) {
+
+if (variables().language1 == true && variables().storyobjects[i].language == variables().uniquelanguages[0]){
+storyobjects_filtered.push(variables().storyobjects[i]);}
+if (variables().language2 == true && variables().storyobjects[i].language == variables().uniquelanguages[1]){
+storyobjects_filtered.push(variables().storyobjects[i]);}
+if (variables().language3 == true && variables().storyobjects[i].language == variables().uniquelanguages[2]){
+storyobjects_filtered.push(variables().storyobjects[i]);}
+if (variables().language4 == true && variables().storyobjects[i].language == variables().uniquelanguages[3]){
+storyobjects_filtered.push(variables().storyobjects[i]);}
+if (variables().language5 == true && variables().storyobjects[i].language == variables().uniquelanguages[4]){
+storyobjects_filtered.push(variables().storyobjects[i]);}
+
+  console.log(storyobjects_filtered);
+}
+
+if (storyobjects_filtered.length > 0){
+variables().storyobjects_filtered = storyobjects_filtered ;}
+else {
+variables().storyobjects_filtered = variables().storyobjects ;
+}
+
+
+<</script>>
+<</widget>>
+
+<<widget "set_vocabulary">>
+<<if $language is "de">>  <<set $vocabulary = { back: "zurück", 
+picture: "Bild", 
+author: "Autor", 
+source: "Quelle", 
+license: "Lizenz", 
+restart: "↻ von vorne", 
+instructions: "Hinweis: klicke auf den Zauberhut, um mit der Geschichte fortzufahren, klicke auf das vorherige Bild, um zurückzukehren.", 
+length: "Länge", 
+story_languages: "Sprachen in Geschichte", 
+priority_category: "Besondere Kategorie (steht immer zur Auswahl)", 
+touch_the_hat: "klicke oder berühre den Hut", 
+back_to_intro: "Zurück zum Start", 
+story_beginning: "Es war einmal...",  
+further_explorations: "Hintergründe erkunden", 
+sources: "Sources & copyright Bilder",
+text2speech_option: "Sprachausgabe 🎧"} >>
+<<elseif $language is "it">> 
+<<set $vocabulary = { back: "indietro", 
+picture: "Immagine", 
+author: "Autore", 
+source: "Fonte", 
+license: "Licenza", 
+restart: "↻ da capo", 
+instructions: "Istruzioni: cliccare sul cappello magico per continuare la storia. Cliccare sull’ultima imagine per andare indietro.",
+length: "Lunghezza", 
+story_languages: "Lingue nella storia", 
+priority_category: "Categoria speciale (sempre tra le scelte)", 
+touch_the_hat: "Clicca o tocca il cappello", 
+back_to_intro: "Menu principale", 
+story_beginning: "C'era una volta...",  
+further_explorations: "Saperne di più", 
+sources: "Fonti & copyright immagini",
+text2speech_option: "sintesi vocale 🎧"} >>
+<<elseif $language is "en">>
+<<set $vocabulary = { 
+back: "back", 
+picture: "Picture", 
+author: "Author", 
+source: "Source", 
+license: "Licence", 
+restart: "↻ restart", 
+instructions: "Instructions: click on the magic hat to narrate your story, click on the last image to go back", 
+length: "Length", 
+story_languages: "Languages in the story", 
+priority_category: "Special category (always in the options)", 
+touch_the_hat: "Click or touch the hat", 
+back_to_intro: "Back to main menu", 
+story_beginning: "Once upon a time...", 
+further_explorations: "Learn more", 
+sources: "Sources & copyright pictures",
+text2speech_option: "text to speech 🎧"} >>
+<<elseif $language is "pt">>
+<<set $vocabulary = { 
+back: "de volta", 
+picture: "imagem", 
+author: "autor", 
+source: "fonte", 
+license: "licença", 
+restart: "↻ reiniciar", 
+instructions: "Instruções: clica no imagem do chapéu mágico para contar a tua história, clica na última imagem para voltar atrás", 
+length: "extensão", 
+story_languages: "Línguas na história", 
+priority_category: "Categoria especial (sempre nas opções)", 
+touch_the_hat: "Clica no chapéu", 
+back_to_intro: "Voltar ao menu principal", 
+story_beginning: "Era uma vez...", 
+further_explorations: "Para saber mais", 
+sources: "Fontes & direitos de autor",
+text2speech_option: "com voz 🎧"} >>
+<</if>>
+
+
+<</widget>>
+<<widget "create_speech_link">> <<if $text2speech_on>><<= '<a href="javascript:void(0)" onclick="reproduce_speech(\'' + $args[0] + '\' , \'' + $args[1] + '\' )"' +'>🎧</a>'>><</if>><</widget>>
+<<widget "create_speech_link_always_on">> <<= '<a href="javascript:void(0)" onclick="reproduce_speech(\'' + $args[0] + '\' , \'' + $args[1] + '\' )"' +'>🎧</a>'>><</widget>>
+
+:: start {"position":"412,187","size":"100,100"}
+@@.item;
+<p class="inline-border">[[$vocabulary.back_to_intro->Intro]]</p>$vocabulary.story_beginning
+@@
+
+@@.item;.example-screen;
+<span id="animated"><<link [img[hat.png]]>></span><<silently>>
+<<filter_storyobject_languages>>
+<<select_offered_storyelements>> 
+<<set $storyelement01A to _storyelementA>>
+<<set $storyelement01B to _storyelementB>>
+<<set $storyelement01C to _storyelementC>>
+	<</silently>><<replace "#animated" t8n>><span id="shake1"><<shake 2s>>[img[hat.png]]<</shake>></span><<timed 2s t8n>><<replace "#shake1" t8n>><p class="inline-border">[[$storyelement01A.title|segment02][$storyelement01 to $storyelement01A]]<<create_speech_link $storyelement01A.title $storyelement01A.language>></p>	<p class="inline-border">[[$storyelement01B.title|segment02][$storyelement01 to $storyelement01B]]<<create_speech_link $storyelement01B.title $storyelement01B.language>></p> 	<p class="inline-border">[[$storyelement01C.title|segment02][$storyelement01 to $storyelement01C]]<<create_speech_link $storyelement01C.title $storyelement01C.language>></p><</replace>><</timed>> 
+<</replace>>
+<</link>>
+@@
+
+
+:: segment02
+
+@@.item.go_back_link;
+
+[img[$storyelement01.imageurl][start]]
+
+@@
+
+@@.item;.example-screen;
+<span id="animated"><<link [img[hat.png]]>></span><<silently>>
+<<select_offered_storyelements>> 
+<<set $storyelement02A to _storyelementA>>
+<<set $storyelement02B to _storyelementB>>
+<<set $storyelement02C to _storyelementC>>
+	<</silently>>
+	<<replace "#animated" t8n>>  <span id="shake1"><<shake 2s>>[img[hat.png]]<</shake>></span><<timed 2s t8n>><<replace "#shake1" t8n>>	<p class="inline-border">[[$storyelement02A.title|segment03][$storyelement02 to $storyelement02A]]<<create_speech_link $storyelement02A.title $storyelement02A.language>></p>	<p class="inline-border">[[$storyelement02B.title|segment03][$storyelement02 to $storyelement02B]]<<create_speech_link $storyelement02B.title $storyelement02B.language>></p>	<p class="inline-border">[[$storyelement02C.title|segment03][$storyelement02 to $storyelement02C]]<<create_speech_link $storyelement02C.title $storyelement02C.language>></p>	<</replace>><</timed>> 
+<</replace>>
+<</link>>
+@@
+
+:: segment03
+
+@@.item;
+[img[$storyelement01.imageurl]]
+
+@@
+@@.item.go_back_link;
+[img[$storyelement02.imageurl][segment02]]
+
+@@
+
+@@.item;.example-screen;
+<span id="animated"><<link [img[hat.png]]>></span><<silently>>
+<<select_offered_storyelements>> 
+<<set $storyelement03A to _storyelementA>>
+<<set $storyelement03B to _storyelementB>>
+<<set $storyelement03C to _storyelementC>>
+	<</silently>>
+	<<replace "#animated" t8n>>  <span id="shake1"><<shake 2s>>[img[hat.png]]<</shake>></span><<timed 2s t8n>><<replace "#shake1" t8n>>	<p class="inline-border">[[$storyelement03A.title|segment04][$storyelement03 to $storyelement03A]]<<create_speech_link $storyelement03A.title $storyelement03A.language>></p>	<p class="inline-border">[[$storyelement03B.title|segment04][$storyelement03 to $storyelement03B]]<<create_speech_link $storyelement03B.title $storyelement03B.language>></p>	<p class="inline-border">[[$storyelement03C.title|segment04][$storyelement03 to $storyelement03C]]<<create_speech_link $storyelement03C.title $storyelement03C.language>></p>	<</replace>><</timed>> 
+<</replace>>
+<</link>>
+@@
+
+
+:: segment04
+
+@@.item;
+[img[$storyelement01.imageurl]]
+
+@@
+@@.item;
+[img[$storyelement02.imageurl]]
+
+@@
+
+@@.item.go_back_link;
+[img[$storyelement03.imageurl][segment03]]
+
+@@
+
+@@.item;.example-screen;
+<span id="animated"><<link [img[hat.png]]>></span><<silently>>
+<<select_offered_storyelements>> 
+<<set $storyelement04A to _storyelementA>>
+<<set $storyelement04B to _storyelementB>>
+<<set $storyelement04C to _storyelementC>>
+	<</silently>><<replace "#animated" t8n>>  <span id="shake1"><<shake 2s>>[img[hat.png]]<</shake>></span><<timed 2s t8n>><<replace "#shake1" t8n>>	<p class="inline-border">[[$storyelement04A.title|segment05][$storyelement04 to $storyelement04A]]<<create_speech_link $storyelement04A.title $storyelement04A.language>></p> 	<p class="inline-border">[[$storyelement04B.title|segment05][$storyelement04 to $storyelement04B]]<<create_speech_link $storyelement04B.title $storyelement04B.language>></p> 	<p class="inline-border">[[$storyelement04C.title|segment05][$storyelement04 to $storyelement04C]]<<create_speech_link $storyelement04C.title $storyelement04C.language>></p> 	<</replace>><</timed>> 
+<</replace>>
+<</link>>
+@@
+
+
+
+:: segment05
+
+@@.item;
+[img[$storyelement01.imageurl]]
+
+@@
+@@.item;
+[img[$storyelement02.imageurl]]
+
+@@
+@@.item;
+[img[$storyelement03.imageurl]]
+
+@@
+@@.item.go_back_link;
+[img[$storyelement04.imageurl][segment04]]
+
+@@
+
+@@.item;.example-screen;
+<span id="animated"><<link [img[hat.png]]>></span><<silently>>
+<<select_offered_storyelements>> 
+<<set $storyelement05A to _storyelementA>>
+<<set $storyelement05B to _storyelementB>>
+<<set $storyelement05C to _storyelementC>>
+	<</silently>><<replace "#animated" t8n>>  <span id="shake1"><<shake 2s>>[img[hat.png]]<</shake>></span><<timed 2s t8n>><<replace "#shake1" t8n>>	<p class="inline-border">[[$storyelement05A.title|segment06][$storyelement05 to $storyelement05A]]<<create_speech_link $storyelement05A.title $storyelement05A.language>></p>	<p class="inline-border">[[$storyelement05B.title|segment06][$storyelement05 to $storyelement05B]]<<create_speech_link $storyelement05B.title $storyelement05B.language>></p>	<p class="inline-border">[[$storyelement05C.title|segment06][$storyelement05 to $storyelement05C]]<<create_speech_link $storyelement05C.title $storyelement05C.language>></p>	<</replace>><</timed>> 
+<</replace>>
+<</link>>
+@@
+
+:: segment06
+
+@@.item;
+[img[$storyelement01.imageurl]]
+
+@@
+@@.item;
+[img[$storyelement02.imageurl]]
+
+@@
+@@.item;
+[img[$storyelement03.imageurl]]
+
+@@
+@@.item;
+[img[$storyelement04.imageurl]]
+
+@@
+@@.item.go_back_link;
+[img[$storyelement05.imageurl][segment05]]
+
+@@
+
+@@.item;.example-screen;
+<span id="animated"><<link [img[hat.png]]>></span><<silently>>
+<<select_offered_storyelements>> 
+<<set $storyelement06A to _storyelementA>>
+<<set $storyelement06B to _storyelementB>>
+<<set $storyelement06C to _storyelementC>>
+	<</silently>><<replace "#animated" t8n>>  <span id="shake1"><<shake 2s>>[img[hat.png]]<</shake>></span><<timed 2s t8n>><<replace "#shake1" t8n>>	<p class="inline-border">[[$storyelement06A.title|segment07][$storyelement06 to $storyelement06A]]<<create_speech_link $storyelement06A.title $storyelement06A.language>></p> 	<p class="inline-border">[[$storyelement06B.title|segment07][$storyelement06 to $storyelement06B]]<<create_speech_link $storyelement06B.title $storyelement06B.language>></p> 	<p class="inline-border">[[$storyelement06C.title|segment07][$storyelement06 to $storyelement06C]]<<create_speech_link $storyelement06C.title $storyelement06C.language>></p> 	<</replace>><</timed>> 
+<</replace>>
+<</link>>
+@@
+
+:: segment07
+
+@@.item;
+[img[$storyelement01.imageurl]]
+
+@@
+@@.item;
+[img[$storyelement02.imageurl]]
+
+@@
+@@.item;
+[img[$storyelement03.imageurl]]
+
+@@
+@@.item;
+[img[$storyelement04.imageurl]]
+
+@@
+@@.item;
+[img[$storyelement05.imageurl]]
+
+@@
+@@.item.go_back_link;
+[img[$storyelement06.imageurl][segment06]]
+
+@@
+
+@@.item;.example-screen;
+<span id="animated"><<link [img[hat.png]]>></span><<silently>>
+<<select_offered_storyelements>> 
+<<set $storyelement07A to _storyelementA>>
+<<set $storyelement07B to _storyelementB>>
+<<set $storyelement07C to _storyelementC>>
+	<</silently>><<replace "#animated" t8n>>  <span id="shake1"><<shake 2s>>[img[hat.png]]<</shake>></span><<timed 2s t8n>><<replace "#shake1" t8n>>	<p class="inline-border">[[$storyelement07A.title|segment08][$storyelement07 to $storyelement07A]]<<create_speech_link $storyelement07A.title $storyelement07A.language>></p> 	<p class="inline-border">[[$storyelement07B.title|segment08][$storyelement07 to $storyelement07B]]<<create_speech_link $storyelement07B.title $storyelement07B.language>></p> 	<p class="inline-border">[[$storyelement07C.title|segment08][$storyelement07 to $storyelement07C]]<<create_speech_link $storyelement07C.title $storyelement07C.language>></p> 	<</replace>><</timed>> 
+<</replace>>
+<</link>>
+@@
+
+:: segment08
+
+@@.item;
+[img[$storyelement01.imageurl]]
+
+@@
+@@.item;
+[img[$storyelement02.imageurl]]
+
+@@
+@@.item;
+[img[$storyelement03.imageurl]]
+
+@@
+@@.item;
+[img[$storyelement04.imageurl]]
+
+@@
+@@.item;
+[img[$storyelement05.imageurl]]
+
+@@
+@@.item;
+[img[$storyelement06.imageurl]]
+
+@@
+@@.item.go_back_link;
+[img[$storyelement07.imageurl][segment07]]
+
+@@
+
+@@.item;.example-screen;
+<span id="animated"><<link [img[hat.png]]>></span><<silently>>
+<<select_offered_storyelements>> 
+<<set $storyelement08A to _storyelementA>>
+<<set $storyelement08B to _storyelementB>>
+<<set $storyelement08C to _storyelementC>>
+	<</silently>><<replace "#animated" t8n>>  <span id="shake1"><<shake 2s>>[img[hat.png]]<</shake>></span><<timed 2s t8n>><<replace "#shake1" t8n>>	<p class="inline-border">[[$storyelement08A.title|segment09][$storyelement08 to $storyelement08A]]<<create_speech_link $storyelement08A.title $storyelement08A.language>></p> 	<p class="inline-border">[[$storyelement08B.title|segment09][$storyelement08 to $storyelement08B]]<<create_speech_link $storyelement08B.title $storyelement08B.language>></p> 	<p class="inline-border">[[$storyelement08C.title|segment09][$storyelement08 to $storyelement08C]]<<create_speech_link $storyelement08C.title $storyelement08C.language>></p> 
+	<</replace>><</timed>> 
+<</replace>>
+<</link>>
+@@
+
+:: segment09
+
+@@.item;
+[img[$storyelement01.imageurl]]
+
+@@
+@@.item;
+[img[$storyelement02.imageurl]]
+
+@@
+@@.item;
+[img[$storyelement03.imageurl]]
+
+@@
+@@.item;
+[img[$storyelement04.imageurl]]
+
+@@
+@@.item;
+[img[$storyelement05.imageurl]]
+
+@@
+@@.item;
+[img[$storyelement06.imageurl]]
+
+@@
+@@.item;
+[img[$storyelement07.imageurl]]
+
+@@
+@@.item.go_back_link;
+[img[$storyelement08.imageurl][segment08]]
+
+@@
+
+<<display_story_ending>> 
+
+:: explore_on_web
+@@.item;
+<<return $vocabulary.back>>
+@@
+
+<<if $storyelement01.explore_text neq "">>
+@@.item.item_with_description;
+[img[$storyelement01.imageurl]]
+<<print $storyelement01.explore_text>>  $storyelement01.explore_url
+@@
+<</if>>
+
+<<if $storyelement02.explore_text neq "">>
+@@.item.item_with_description;
+[img[$storyelement02.imageurl]]
+$storyelement02.explore_text  $storyelement02.explore_url
+@@
+<</if>>
+
+<<if $storyelement03.explore_text neq "">>
+@@.item.item_with_description;
+[img[$storyelement03.imageurl]]
+$storyelement03.explore_text  $storyelement03.explore_url
+@@
+<</if>>
+
+<<if $storyelement04.explore_text neq "">>
+@@.item.item_with_description;
+[img[$storyelement04.imageurl]]
+$storyelement04.explore_text  $storyelement04.explore_url
+@@
+<</if>>
+
+<<if $storyelement05.explore_text neq "">>
+@@.item.item_with_description;
+[img[$storyelement05.imageurl]]
+$storyelement05.explore_text  $storyelement05.explore_url
+@@
+<</if>>
+
+<<if $storyelement06.explore_text neq "">>
+@@.item.item_with_description;
+[img[$storyelement06.imageurl]]
+$storyelement06.explore_text  $storyelement06.explore_url
+@@
+<</if>>
+
+<<if $storyelement07.explore_text neq "">>
+@@.item.item_with_description;
+[img[$storyelement07.imageurl]]
+$storyelement07.explore_text  $storyelement07.explore_url
+@@
+<</if>>
+
+<<if $storyelement08.explore_text neq "">>
+@@.item.item_with_description;
+[img[$storyelement08.imageurl]]
+$storyelement08.explore_text  $storyelement08.explore_url
+@@
+<</if>>
+
+:: credits
+
+@@.item;
+<<return $vocabulary.back>>
+@@
+<<if $storyelement01.copyright_author neq "">>
+@@.item.item_with_description;
+[img[$storyelement01.imageurl]]
+<<print $vocabulary.picture>>: $storyelement01.title
+<<print $vocabulary.author>>: $storyelement01.copyright_author 
+<<print $vocabulary.source>>: $storyelement01.copyright_source 
+<<print $vocabulary.license>>: $storyelement01.copyright_license 
+@@
+<</if>>
+<<if $storyelement02.copyright_author neq "">>
+@@.item.item_with_description;
+[img[$storyelement02.imageurl]]
+<<print $vocabulary.picture>>: $storyelement02.title
+<<print $vocabulary.author>>: $storyelement02.copyright_author 
+<<print $vocabulary.source>>: $storyelement02.copyright_source 
+<<print $vocabulary.license>>: $storyelement02.copyright_license 
+@@
+<</if>>
+<<if $storyelement03.copyright_author neq "">>
+@@.item.item_with_description;
+[img[$storyelement03.imageurl]]
+<<print $vocabulary.picture>>: $storyelement03.title
+<<print $vocabulary.author>>: $storyelement03.copyright_author 
+<<print $vocabulary.source>>: $storyelement03.copyright_source 
+<<print $vocabulary.license>>: $storyelement03.copyright_license 
+@@
+<</if>>
+<<if $storyelement04.copyright_author neq "">>
+@@.item.item_with_description;
+[img[$storyelement04.imageurl]]
+<<print $vocabulary.picture>>: $storyelement04.title
+<<print $vocabulary.author>>: $storyelement04.copyright_author 
+<<print $vocabulary.source>>: $storyelement04.copyright_source 
+<<print $vocabulary.license>>: $storyelement04.copyright_license 
+@@
+<</if>>
+<<if $storyelement05.copyright_author neq "">>
+@@.item.item_with_description;
+[img[$storyelement05.imageurl]]
+<<print $vocabulary.picture>>: $storyelement05.title
+<<print $vocabulary.author>>: $storyelement05.copyright_author 
+<<print $vocabulary.source>>: $storyelement05.copyright_source 
+<<print $vocabulary.license>>: $storyelement05.copyright_license 
+@@
+<</if>>
+<<if $storyelement06.copyright_author neq "">>
+@@.item.item_with_description;
+[img[$storyelement06.imageurl]]
+<<print $vocabulary.picture>>: $storyelement06.title
+<<print $vocabulary.author>>: $storyelement06.copyright_author 
+<<print $vocabulary.source>>: $storyelement06.copyright_source 
+<<print $vocabulary.license>>: $storyelement06.copyright_license 
+@@
+<</if>>
+<<if $storyelement07.copyright_author neq "">>
+@@.item.item_with_description;
+[img[$storyelement07.imageurl]]
+<<print $vocabulary.picture>>: $storyelement07.title
+<<print $vocabulary.author>>: $storyelement07.copyright_author 
+<<print $vocabulary.source>>: $storyelement07.copyright_source 
+<<print $vocabulary.license>>: $storyelement07.copyright_license 
+@@
+<</if>>
+<<if $storyelement08.copyright_author neq "">>
+@@.item.item_with_description;
+[img[$storyelement08.imageurl]]
+<<print $vocabulary.picture>>: $storyelement08.title
+<<print $vocabulary.author>>: $storyelement08.copyright_author 
+<<print $vocabulary.source>>: $storyelement08.copyright_source 
+<<print $vocabulary.license>>: $storyelement08.copyright_license 
+@@
+<</if>>
+
+
+:: StoryInit
+<<set $language to "it">>
+<<set $text2speech_on to true>>
+
+
+:: Titlepage {"position":"407,56","size":"100,100"}
+@@.item;
+!!Fantanomio
+<p class="inline-border"><<link "▶" Intro>><<set_vocabulary>><</link>></p>
+@@
+/*
+Sprache: <<if $language isnot "">> <<link "Italiano" Intro>> <<set $language to "it">><<set_vocabulary>> <</link>> <</if>> <<if $language isnot "">> <<link "Deutsch" Intro>> <<set $language to "de">> <<set_vocabulary>> <</link>> <</if>> <<if $language isnot "">> <<link "English" Intro>> <<set $language to "en">> <<set_vocabulary>> <</link>> <</if>></p >
+<<set _interface_language to ["Deutsch", "Italiano", "English"]>><<cycle "$language" autoselect>><<optionsfrom _interface_language>>
+<</cycle>>*/
+:: Intro {"position":"407,56","size":"100,100"}
+
+
+
+
+
+
+/* is now done by external Javascript
+<<set $storyobjects = [
+	{ title: "faraone", imageurl: "01.jpg" },
+	{ title: "bici", imageurl: "02.jpg" },
+	{ title: "skateboard", imageurl: "skateboard.jpg" },
+	{ title: "soldato romano", imageurl: "roman.jpg" },
+	{ title: "negozio di scarpe", imageurl: "shoeshop.jpg" },
+	{ title: "scooter", imageurl: "scooter.jpg" },
+	{ title: "principe", imageurl: "prince.jpg" },
+	{ title: "cavaliere", imageurl: "knight.jpg" },
+	{ title: "pattini a rotelle", imageurl: "inlineskate.jpg" },
+	{ title: "negozio di informatica", imageurl: "computershop.jpg" },
+	{ title: "uomo preistorico", imageurl: "caveman.jpg" },
+	{ title: "venditore di auto", imageurl: "car_dealership.jpg" },
+	{ title: "libreria", imageurl: "bookshop.jpg" },
+] >>
+*/
+
+
+
+/*
+itliano:
+
+
+Generate a list of story categories
+*/
+
+
+
+
+
+@@.item;
+!!Fantastinomio
+<p class="inline-border"><<if $language isnot "it">> <<link "🇮🇹" Intro>><<set $language to "it">><<set_vocabulary>><</link>> <</if>><<if $language isnot "de">> <<link "🇩🇪" Intro>><<set $language to "de">><<set_vocabulary>><</link>> <</if>><<if $language isnot "en">> <<link "🇬🇧" Intro>><<set $language to "en">><<set_vocabulary>><</link>> <</if>><<if $language isnot "pt">> <<link "🇵🇹" Intro>><<set $language to "pt">><<set_vocabulary>><</link>> <</if>></p >
+/*Sprache: <<if $language isnot "it">>[["Italiano"|Intro][$language to "it"]]<</if>> <<if $language isnot "de">>[["Deutsch"|Intro][$language to "de"]]<</if>> <<if $language isnot "en">>[["English"|Intro][$language to "en"]]<</if>>
+<<set _interface_language to ["Deutsch", "Italiano", "English"]>><<cycle "$language" autoselect>><<optionsfrom _interface_language>>
+<</cycle>>*/
+
+@@
+
+@@.itemcentral;
+$vocabulary.instructions <<create_speech_link_always_on $vocabulary.instructions $language>> /*attention, no apostrophs in output text please, only ’ */
+<<linkreplace "⚙️">>/%<<print $vocabulary.length>>: <<set $story_length_options to ["2", "3", "4", "5", "6", "7", "8"]  /*["8"]*/>><<cycle "$story_length" autoselect>><<optionsfrom $story_length_options>><</cycle>>%/<p class="inline-border"><<print $vocabulary.story_languages>>: <<if $uniquelanguages.length > 0>><<checkbox "$language1" false true checked>>$uniquelanguages[0]<</if>> <<if $uniquelanguages.length > 1>><<checkbox "$language2" false true checked>>$uniquelanguages[1] <</if>>
+<<if $uniquelanguages.length > 2>><<checkbox "$language3" false true checked>>$uniquelanguages[2] <</if>><<if $uniquelanguages.length > 3>><<checkbox "$language4" false true checked>>$uniquelanguages[3] <</if>><<if $uniquelanguages.length > 4>><<checkbox "$language5" false true checked>>$uniquelanguages[4] <</if>>
+<<print $vocabulary.priority_category>>: <<cycle "$mandatory_category" autoselect>>
+<<optionsfrom $uniquecategories>>
+<</cycle>> 
+<<checkbox "$text2speech_on" false true autocheck>>$vocabulary.text2speech_option</p ><</linkreplace>>
+@@
+
+@@.item;
+<p class="inline-border"><span id="animated">[img[ |hat.png][start]]</span></p > $vocabulary.touch_the_hat
+@@
+
+
+
