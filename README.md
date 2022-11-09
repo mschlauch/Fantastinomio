@@ -21,9 +21,9 @@ OR
 for a local or offline setup you can also use the line "python3 -m http.server" from the main directory and start http://0.0.0.0:8000/ in your local browser
 
 
-#Story elements
+# Story elements
 
-##Text2speech, speech synthesis:
+## Text2speech, speech synthesis:
 These are the language tags with which languages can be determined in the "Language" column: the system will understand labels such as "German", "Italian"...
 
 "ar-Arabic","cs-Czech","da-Danish","de-German","de-Deutsch","el-Greek","en-English","eo-Esperanto","es-Spanish","et-Estonian","fi-Finnish","fr-French","he-Hebrew","hi-Hindi","hu-Hungarian","id-Indonesian","it-Italian","it-Italiano","ja-Japanese","ko-Korean","la-Latin","lt-Lithuanian","lv-Latvian","nb-Norwegian Bokmal","nl-Dutch","nn-Norwegian Nynorsk","no-Norwegian","pl-Polish","pt-Portuguese","pt-Português","ro-Romanian","ru-Russian","sk-Slovak","sl-Slovenian","sq-Albanian","sr-Serbian","sv-Swedish","th-Thai","tr-Turkish","zh-Chinese"
@@ -31,7 +31,7 @@ These are the language tags with which languages can be determined in the "Langu
 
 
 
-##Copyright (C) 2022  Michael Schlauch
+## Copyright (C) 2022  Michael Schlauch
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ These are the language tags with which languages can be determined in the "Langu
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
     
-##Open Dyslexic Font
+## Open Dyslexic Font
 Copyright
 
 Copyright (c) 2003 by Bitstream, Inc. All Rights Reserved. Bitstream Vera is a trademark of Bitstream, Inc.
